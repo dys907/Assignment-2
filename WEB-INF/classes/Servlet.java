@@ -1,5 +1,7 @@
-public interface Servlet {
-    public void doGet(Request request, Response response);
+import java.net.http.HttpRequest;
 
-    public void doPost(Request request, Response response);
+public interface Servlet {
+    public void doGet(HttpRequest request, HttpResponse response);
+
+    public void doPost(HttpRequest request, HttpResponse response);
 }
