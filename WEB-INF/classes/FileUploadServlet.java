@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.security.DrbgParameters.Capability;
 import java.util.Date;
 
 public class FileUploadServlet {
@@ -69,14 +70,32 @@ public class FileUploadServlet {
         String uploadData = getUploadData();
 
         DataOutputStream out;
+        String pikachu = "pikachu";
 
         try {
 
             out = new DataOutputStream(socket.getOutputStream());
 
             out.writeBytes("POST /midp/upload HTTP/1.0");
-            
+            out.writeBytes("\r\n");
+
+            out.writeBytes("Host: localhost:8081");
+            out.writeBytes("\r\n");
+
+            // out.writeBytes("Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+            // out.writeBytes("\r\n");
+
+            // out.writeBytes("Accept-Language: en-US,en;q=0.");
+            // out.writeBytes("\r\n");
+
+            out.writeBytes("Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryD9JJQuX4ZDbHlYQy");
+            out.writeBytes("\r\n");
+
+            out.writeBytes("Content-Length: " + uploadData.length());
+            out.writeBytes("\r\n");
+
             out.writeBytes(uploadData);
+
             out.writeBytes("\r\n\r\n");
             out.close();
 
@@ -94,7 +113,24 @@ public class FileUploadServlet {
      * @return data to go to upload stream
      */
     private String getUploadData() {
-        return "DATABYTES_" + (fileName + "_" + dateCreated + "_" + keyword).trim();
+         return 
+            "------WebKitFormBoundaryD9JJQuX4ZDbHlYQy\n"
+            + "Content-Disposition: form-data; name=\"fileName\"\n"
+            + "\n"
+            + fileName + "\n\n"
+
+            + "------WebKitFormBoundaryD9JJQuX4ZDbHlYQy\n"
+            + "Content-Disposition: form-data; name=\"date\"\n"
+            + "\n"
+            + dateCreated + "\n\n"
+
+            + "------WebKitFormBoundaryD9JJQuX4ZDbHlYQy\n"
+            + "Content-Disposition: form-data; name=\"caption\"\n"
+            + "\n"
+            + keyword + "\n\n"
+            
+            + "------WebKitFormBoundaryD9JJQuX4ZDbHlYQy--\n";
+            
     }
 
 }

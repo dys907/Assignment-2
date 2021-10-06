@@ -14,7 +14,7 @@ public class Activity {
 
     public Activity(String filename, String dateCreated, String keyword) {
 
-        this.fileName = generateFileName(filename, dateCreated, keyword);
+        this.fileName = filename;
 
         this.dateCreated = dateCreated;
 
@@ -41,7 +41,7 @@ public class Activity {
      * @return finished filename
      */
     private String generateFileName(String filename, String dateCreated, String keyword) {
-        return (filename + "_" + dateCreated + "_" + keyword).trim() + ".png";
+        return (filename + "_" + dateCreated + "_" + keyword).trim();
     }
 
 }
