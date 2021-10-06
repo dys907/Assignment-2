@@ -74,9 +74,10 @@ public class FileUploadServlet {
 
             out = new DataOutputStream(socket.getOutputStream());
 
-            out.writeBytes("POST /midp/upload HTTP/1.0\r\n\r\n");
-
+            out.writeBytes("POST /midp/upload HTTP/1.0");
+            
             out.writeBytes(uploadData);
+            out.writeBytes("\r\n\r\n");
             out.close();
 
 
