@@ -2,6 +2,9 @@ import java.io.*;
 import java.net.*;
 public class UploadClient {
 
+    private String rawFileName;
+    private String rawDate;
+    private String rawCaption;
     private String fileName;
     private String boundary = "boundary";
 
@@ -18,6 +21,11 @@ public class UploadClient {
      */
     public UploadClient(String fileString) {
         fileName = fileString;
+        
+        String[] brokenData = fileString.split("_");
+        rawFileName = brokenData[0];
+        rawDate = brokenData[1];
+        rawCaption = brokenData[2];
     }
 
     /**
@@ -105,7 +113,22 @@ public class UploadClient {
             + "Content-Disposition: form-data; name=\"image\"" + "\n"
             + "\n"
             + image.toString() + "\n"
-            
+
+            + "--" + boundary + "\n"
+            + "Content-Disposition: form-data; name=\"rawFileName\"" + "\n"
+            + "\n"
+            + rawFileName + "\n"
+
+            + "--" + boundary + "\n"
+            + "Content-Disposition: form-data; name=\"rawDate\"" + "\n"
+            + "\n"
+            + rawDate + "\n"
+
+            + "--" + boundary + "\n"
+            + "Content-Disposition: form-data; name=\"rawCaption\"" + "\n"
+            + "\n"
+            + rawCaption + "\n"
+
             + "--" + boundary + "--";           
    }
 }
