@@ -1,5 +1,9 @@
 import java.io.*;
 import java.net.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class UploadClient {
 
     private String rawFileName;
@@ -63,7 +67,7 @@ public class UploadClient {
             fis.close();
 
             //Get the return from the server as a listing of all images
-            System.out.println("Came this far\n");
+            System.out.println("Getting reply from server...\n");
             String filename = "";
             while ((filename = in.readLine()) != null) {
                 listing += filename;

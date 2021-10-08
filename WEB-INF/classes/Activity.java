@@ -1,3 +1,8 @@
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.*;
 import java.util.Scanner;
 public class Activity {
@@ -51,14 +56,34 @@ public class Activity {
    * Must be Called when Activity is ran 
    */
    public void onCreate() {
-      System.out.println(new UploadClient(generateFileName(fileName, dateCreated, caption)).uploadFile());
+      
+      String serverRespJSON = new UploadClient(generateFileName(fileName, dateCreated, caption)).uploadFile();
+
+      try {
+
+         JSONObject rawFileNames = new JSONObject(serverRespJSON);
+         JSONArray fileNames = rawFileNames.getJSONArray("fileNames");
+
+         for (int i = 0; i < fileNames.length() ; i++) {
+
+            JSONObject fileNameObj = fileNames.getJSONObject(i);
+            System.out.println(fileNameObj.getString("fileName"));
+         }
+
+      } catch (Exception ex) {
+         ex.printStackTrace();
+      }
+
+      System.out.println("\nFinished upload and response!");
+      System.out.println("Thank you for using the console app!");
+      System.out.println("====================================");
    }
 
    /**
      * Generates a filename from params given
      * @param filename
      * @param dateCreated
-     * @param keyword
+     * @param caption
      * @return finished filename
      */
    private String generateFileName(String filename, String dateCreated, String caption) {
