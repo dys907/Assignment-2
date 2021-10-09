@@ -12,10 +12,22 @@ public class UploadServerThread extends Thread {
          InputStream in = socket.getInputStream(); 
          HttpRequest req = new HttpRequest(in);
          OutputStream baos = new ByteArrayOutputStream(); 
-         HttpResponse res = new HttpResponse(baos); 
+         HttpResponse res = new HttpResponse(baos);
 
+         DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+         BufferedReader br = new BufferedReader(
+                 new InputStreamReader(in));
+         String inputLine;
+         inputLine = br.readLine();
          HttpServlet httpServlet = new UploadServlet();
-         httpServlet.doPost(req, res);
+
+         if (inputLine.contains("GET")) {
+            httpServlet.doGet(req,res);
+         }
+         if (inputLine.contains("POST")) {
+            httpServlet.doPost(req, res);
+         }
+
          OutputStream out = socket.getOutputStream(); 
          out.write(((ByteArrayOutputStream) baos).toByteArray());
          socket.close();

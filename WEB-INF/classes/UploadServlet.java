@@ -1,6 +1,12 @@
 import java.io.*;
 import java.time.Clock;
 public class UploadServlet extends HttpServlet {
+   private ByteArrayOutputStream servletBaos;
+
+   public UploadServlet() {
+      servletBaos = new ByteArrayOutputStream();
+   }
+
    public void doPost(HttpRequest request, HttpResponse response) {
       try {
          InputStream in = request.getInputStream();   
@@ -12,7 +18,7 @@ public class UploadServlet extends HttpServlet {
          }
          Clock clock = Clock.systemDefaultZone();
          long milliSeconds=clock.millis();
-         OutputStream outputStream = new FileOutputStream(new File(String.valueOf(milliSeconds) + ".png"));
+         OutputStream outputStream = new FileOutputStream(new File("..\\..\\images\\" + String.valueOf(milliSeconds) + ".png"));
          baos.writeTo(outputStream);
          outputStream.close();
          PrintWriter out = new PrintWriter(response.getOutputstream(), true);
@@ -68,4 +74,8 @@ public class UploadServlet extends HttpServlet {
 //
 //      }
 //   }
+
+   public ByteArrayOutputStream getServletBaos() {
+      return servletBaos;
+   }
 }
