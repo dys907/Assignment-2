@@ -23,7 +23,6 @@ public class ParsedRequest {
         //POST or GET check
         this.request = reader.readLine();
         this.type = this.request.split(" ")[1];
-        System.out.println("debug0");
 
         //Header parse
         line = reader.readLine();
@@ -33,26 +32,15 @@ public class ParsedRequest {
             line = reader.readLine();
 
         }
-        System.out.println("debug1");
-
         //Multipart check
         if (headers.containsKey("Content-Type")) {
             this.contentType = headers.get("Content-Type");
             //boundary delimiter
             if (this.contentType.contains("multipart/form-data")) {
                 int boundaryIndex = this.contentType.indexOf("=");
-                System.out.println(boundaryIndex);
                 this.boundary = this.contentType.substring(boundaryIndex + 1);
             }
         }
-
-        System.out.println("debug2");
-        System.out.println("boundary");
-        System.out.println(this.boundary);
-        System.out.println("request");
-        System.out.println(this.request);
-        System.out.println("type");
-        System.out.println(this.type);
 
         //Body Parse
         StringBuffer bodyBuffer = new StringBuffer();
@@ -63,43 +51,63 @@ public class ParsedRequest {
         String header = "";
         String content = "";
         while(line != null) {
+            content = "";
+            boolean imageData = false;
             if (this.boundary != null) {
                 Part part;
+                if ((line.contains(this.boundary+"--"))) break;
                 if (line.contains(this.boundary)) {
                     if (counter == 0) {
                         counter++;
                     } else {
-                        System.out.println(header);
-                        System.out.println(content);
+//                        System.out.println("in else");
+                        line = reader.readLine();
+                        if (line.contains("Content-Disposition: form-data")) {
+                            header = line;
+                            line = reader.readLine();
+//                            System.out.println("header: "+header);
+                        }
+                        if (line.contains("Content-Type:")) {
+                            imageData = true;
+                            line = reader.readLine();
+                        }
+
+//                        System.out.println("before whiel loops");
+                        while (!line.contains(this.boundary)) {
+                            if (imageData) {
+                                content += line + "\n";
+                            } else {
+                                content += line;
+                            }
+                            line = reader.readLine();
+
+//                            System.out.println("In while loop, content:");
+//                            System.out.println(content);
+                        }
+
+                        if (content.length() > 500) {
+                            content = content.substring(1, content.length()-1);
+                        }
+//                        System.out.println("Out of while loop, content:");
+//                        System.out.println(content);
+
+//                        System.out.println("current line:");
+//                        System.out.println(line);
+
                         part = new Part(header, content);
                         parts.add(part);
-                        System.out.println("debug 4.5");
+
                     }
-                } else if (line.contains("Content-Type: application/octet-stream")) {
-
-                } else if (line.contains("Content-Disposition: form-data")) {
-                    header = line;
-                    System.out.println("debug5");
-                    System.out.println(header);
-
-                }else if (!line.trim().isEmpty()) {
-                    System.out.println("debug6");
-                    content = line;
-                    System.out.println(content);
+                    //line = reader.readLine();
+                } else {
+                    bodyBuffer.append(line);
                 }
-                //line = reader.readLine();
-                System.out.println("debug7");
-            } else {
-                bodyBuffer.append(line);
+//                line = reader.readLine();
             }
-            System.out.println("debug8");
-            line = reader.readLine();
-            System.out.println("debug9");
+            if (bodyBuffer.toString().isEmpty()) {
+                this.body = bodyBuffer.toString();
+            }
         }
-        if(bodyBuffer.toString().isEmpty()) {
-            this.body = bodyBuffer.toString();
-        }
-
     }
 
 

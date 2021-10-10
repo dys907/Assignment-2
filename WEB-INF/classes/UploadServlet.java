@@ -1,10 +1,7 @@
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.time.*;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
-import java.util.ArrayList;
+import java.util.*;
 
 public class UploadServlet extends HttpServlet {
    private OutputStream servletBaos;
@@ -38,26 +35,17 @@ public class UploadServlet extends HttpServlet {
             inputLine = br.readLine();
             requestString += inputLine + "\n";
          }
-         System.out.println("Original request String");
-         System.out.println(requestString);
-         System.out.println(" ");
          baos.write(requestString.getBytes());
          //Parse request
          ParsedRequest parsedRequest = new ParsedRequest(requestString);
-         System.out.println("Header");
-         System.out.println(parsedRequest.getHeaders());
-         System.out.println("ContentType");
-         System.out.println(parsedRequest.getContentType());
-         System.out.println("Request");
-         System.out.println(parsedRequest.getRequest());
-         System.out.println("Body");
-         System.out.println(parsedRequest.getBody());
          String caption = "";
          String date = "";
          String imgName = "";
          String file = "";
+         System.out.println("just before parts call");
+
          for(Part part: parsedRequest.getParts()) {
-            System.out.println("Parts of parsedRequest");
+            System.out.println("**************Parts of parsedRequest**************");
             System.out.println(part.getHeader());
             System.out.println(part.getContent());
             String header = part.getHeader().replace("\"", "");
@@ -69,15 +57,20 @@ public class UploadServlet extends HttpServlet {
             }
             else {
                imgName = header;
-               file = part.getContent().toString();
+               file = part.getContent();
+               System.out.println(file);
             }
          }
+         System.out.println("Just before file creation");
          String extension = imgName.substring(imgName.lastIndexOf(".") + 1);
          String newFileName = imgName + "_" + date + "_" + caption + "." + extension;
+         System.out.println("file length sanity check: " + file.length());
+
+
          OutputStream newImg = new BufferedOutputStream(new FileOutputStream("..\\..\\images\\" + newFileName));
+//         byte[] imgBytes = Base64.getDecoder().decode(file);
+
          newImg.write(file.getBytes());
-
-
 
 
          //End Parse
@@ -91,7 +84,7 @@ public class UploadServlet extends HttpServlet {
          baos.writeTo(outputStream);
          outputStream.close();
 
-         PrintWriter out = new PrintWriter(response.getOutputstream(), true);
+//         PrintWriter out = new PrintWriter(response.getOutputstream(), true);
 
          //Pushes file names into servletBaos to get sent to output stream
 
