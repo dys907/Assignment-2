@@ -23,19 +23,24 @@ public class UploadClient {
      * Upload Client Constructor
      * @param fileString
      */
-    public UploadClient(String fileString) throws IncorrectFileTypeException {
-        fileName = fileString;
+    public UploadClient(String fileString) {
+        try {
+            fileName = fileString;
 
-        String[] brokenData = fileString.split("_");
-        rawFileName = brokenData[0];
-        rawDate = brokenData[1];
-        rawCaption = brokenData[2];
-        String fileExtension = "";
-        int index = rawFileName.lastIndexOf('.');
-        if (index > 0) fileExtension = rawFileName.substring(index + 1);
-        if (!(fileExtension.matches("(?i)png|jpeg|gif"))) {
-            throw new IncorrectFileTypeException("Can only upload png/jpeg/gif images");
+            String[] brokenData = fileString.split("_");
+            rawFileName = brokenData[0];
+            rawDate = brokenData[1];
+            rawCaption = brokenData[2];
+            String fileExtension = "";
+            int index = rawFileName.lastIndexOf('.');
+            if (index > 0) fileExtension = rawFileName.substring(index + 1);
+            if (!(fileExtension.matches("(?i)png|jpeg|gif"))) {
+                throw new IncorrectFileTypeException("Can only upload png/jpeg/gif images");
+            }
+        } catch (IncorrectFileTypeException e) {
+            System.out.println("Exception caught - " + e);
         }
+
     }
 
     /**
