@@ -14,7 +14,7 @@ public class UploadClient {
     private String rawDate;
     private String rawCaption;
     private String fileName;
-    private String boundary = "boundary";
+    private String boundary = "--------------1234578890567";
 
     /**
      * UploadClient Default Conistructor
@@ -123,11 +123,12 @@ public class UploadClient {
         builder.append("Host: localhost:8999");
         builder.append("\r\n");
 
-        builder.append("Content-Type: multipart/form-data;boundary=\"" + boundary + "\"");
+        builder.append("Content-Type: multipart/form-data;boundary=" + boundary);
         builder.append("\r\n");
 
         builder.append("Content-Length: " + messageLen);
         builder.append("\r\n");
+        builder.append("\n");
         
         return builder.toString();
     }
@@ -138,32 +139,32 @@ public class UploadClient {
      */
     private String getMessageBody(String fileName, String image) {
         return 
-            "--" + boundary + "\n"
+            boundary + "\n"
             + "Content-Disposition: form-data; name=\"fileName\"" + "\n"
             + "\n"
             + fileName + "\n"
 
-            + "--" + boundary + "\n"
+            + boundary + "\n"
             + "Content-Disposition: form-data; name=\"image\"" + "\n"
             + "Content-Type: image/base64" + "\n"
             + "\n"
             + image + "\n"
 
-            + "--" + boundary + "\n"
+            + boundary + "\n"
             + "Content-Disposition: form-data; name=\"rawFileName\"" + "\n"
             + "\n"
             + rawFileName + "\n"
 
-            + "--" + boundary + "\n"
+            + boundary + "\n"
             + "Content-Disposition: form-data; name=\"rawDate\"" + "\n"
             + "\n"
             + rawDate + "\n"
 
-            + "--" + boundary + "\n"
+            + boundary + "\n"
             + "Content-Disposition: form-data; name=\"rawCaption\"" + "\n"
             + "\n"
             + rawCaption + "\n"
 
-            + "--" + boundary + "--";           
+            + boundary + "--";
    }
 }

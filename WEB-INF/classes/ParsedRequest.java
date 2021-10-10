@@ -14,24 +14,29 @@ public class ParsedRequest {
     public List<Part> parts = new ArrayList<>();
     private String body;
     private String boundary;
+    private boolean isBase64Encoded;
 
     ParsedRequest(String request) throws IOException {
         //BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
         BufferedReader reader = new BufferedReader(new StringReader(request));
         String line;
 
+//        System.out.println("parsecheck1");
         //POST or GET check
         this.request = reader.readLine();
         this.type = this.request.split(" ")[1];
 
+//        System.out.println("parsecheck2");
         //Header parse
         line = reader.readLine();
+//        System.out.println(line);
         while(line.length() > 0) {
             int colon = line.indexOf(":");
             this.headers.put(line.substring(0, colon), line.substring(colon + 1));
             line = reader.readLine();
 
         }
+//        System.out.println("parsecheck3");
         //Multipart check
         if (headers.containsKey("Content-Type")) {
             this.contentType = headers.get("Content-Type");
@@ -41,25 +46,32 @@ public class ParsedRequest {
                 this.boundary = this.contentType.substring(boundaryIndex + 1);
             }
         }
+//        System.out.println("parsecheck4");
 
         //Body Parse
         StringBuffer bodyBuffer = new StringBuffer();
-
 
         line = reader.readLine();
         int counter = 0;
         String header = "";
         String content = "";
+        isBase64Encoded = false;
+
+//        System.out.println("parsecheck5");
         while(line != null) {
             content = "";
             boolean imageData = false;
             if (this.boundary != null) {
                 Part part;
+//                System.out.println("===Boundary check====");
+//                System.out.println(this.boundary);
                 if ((line.contains(this.boundary+"--"))) break;
+
                 if (line.contains(this.boundary)) {
                     if (counter == 0) {
                         counter++;
                     } else {
+
 //                        System.out.println("in else");
                         line = reader.readLine();
                         if (line.contains("Content-Disposition: form-data")) {
@@ -68,6 +80,7 @@ public class ParsedRequest {
 //                            System.out.println("header: "+header);
                         }
                         if (line.contains("Content-Type:")) {
+                            if (line.contains("base64")) isBase64Encoded = true;
                             imageData = true;
                             line = reader.readLine();
                         }
@@ -85,12 +98,12 @@ public class ParsedRequest {
 //                            System.out.println(content);
                         }
 
-                        if (content.length() > 500) {
+                        if (content.length() > 500&& !isBase64Encoded)  {
                             content = content.substring(1, content.length()-1);
                         }
 //                        System.out.println("Out of while loop, content:");
 //                        System.out.println(content);
-
+//
 //                        System.out.println("current line:");
 //                        System.out.println(line);
 
@@ -117,6 +130,10 @@ public class ParsedRequest {
 
     public String getContentType() {
         return this.contentType;
+    }
+
+    public boolean getBase64Encoded() {
+        return this.isBase64Encoded;
     }
 
     public String getType() {
