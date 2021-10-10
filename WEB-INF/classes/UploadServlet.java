@@ -128,6 +128,7 @@ public class UploadServlet extends HttpServlet {
 
             File dir = new File("..\\..\\images\\");
             String[] chld = dir.list();
+            Arrays.sort(chld);
 //         for (int i = 0; i < chld.length; i++) {
 //            String fileName = chld[i];
 //            servletBaos.write((fileName + "\n").getBytes());
@@ -189,6 +190,7 @@ public class UploadServlet extends HttpServlet {
               "<body><ul>";
       File dir = new File(path);
       String[] child = dir.list();
+      Arrays.sort(child);
 
       for (String string : child) {
          if ((new File(path + string)).isDirectory())
