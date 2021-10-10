@@ -37,8 +37,27 @@ public class UploadServlet extends HttpServlet {
             inputLine = br.readLine();
             requestString += inputLine + "\n";
          }
-
+         System.out.println("Original request String");
+         System.out.println(requestString);
+         System.out.println(" ");
          baos.write(requestString.getBytes());
+         //Parse request
+         ParsedRequest parsedRequest = new ParsedRequest(requestString);
+         System.out.println("Header");
+         System.out.println(parsedRequest.getHeaders());
+         System.out.println("ContentType");
+         System.out.println(parsedRequest.getContentType());
+         System.out.println("Request");
+         System.out.println(parsedRequest.getRequest());
+         System.out.println("Body");
+         System.out.println(parsedRequest.getBody());
+         for(Part part: parsedRequest.getParts()) {
+            System.out.println("Parts of parsedRequest");
+            System.out.println(parsedRequest.getHeaders());
+            System.out.println(part.getContent());
+         }
+
+         //End Parse
 
          Clock clock = Clock.systemDefaultZone();
          long milliSeconds = clock.millis();
@@ -46,12 +65,11 @@ public class UploadServlet extends HttpServlet {
          OutputStream outputStream = new FileOutputStream(new File("..\\..\\images\\" + String.valueOf(milliSeconds) + ".png"));
          baos.writeTo(outputStream);
          outputStream.close();
-<<<<<<< HEAD
+
          PrintWriter out = new PrintWriter(response.getOutputstream(), true);
-=======
 
          //Pushes file names into servletBaos to get sent to output stream
->>>>>>> 6899fbd252d10bcb52b7fc0c5899d170f11dad35
+
          File dir = new File("..\\..\\images\\");
          String[] chld = dir.list();
          for (int i = 0; i < chld.length; i++) {
