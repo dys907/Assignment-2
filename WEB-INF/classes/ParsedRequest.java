@@ -60,24 +60,24 @@ public class ParsedRequest {
 
         line = reader.readLine();
         int counter = 0;
+        String header = "";
+        String content = "";
         while(line != null) {
-            System.out.println("debug3");
             if (this.boundary != null) {
-                System.out.println("debug4");
-                String header = "";
-                String content = "";
                 Part part;
-
                 if (line.contains(this.boundary)) {
                     if (counter == 0) {
                         counter++;
                     } else {
+                        System.out.println(header);
+                        System.out.println(content);
                         part = new Part(header, content);
                         parts.add(part);
                         System.out.println("debug 4.5");
                     }
-                }
-                else if (line.contains("Content-Disposition: form-data")) {
+                } else if (line.contains("Content-Type: application/octet-stream")) {
+
+                } else if (line.contains("Content-Disposition: form-data")) {
                     header = line;
                     System.out.println("debug5");
                     System.out.println(header);

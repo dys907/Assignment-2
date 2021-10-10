@@ -9,8 +9,8 @@ public class Part {
         List<String> headerList = Arrays.asList(headers.split("\\s*;\\s*"));
         for(String headerStr : headerList) {
             if(headerStr.contains("name=")) {
-                int keyAssign = headerStr.indexOf("name=");
-                this.header = headerStr.substring(keyAssign);
+                int keyAssign = headerStr.indexOf("=");
+                this.header = headerStr.substring(keyAssign + 1);
                 System.out.println("Header " + this.header);
             }
         }

@@ -53,7 +53,7 @@ public class UploadServlet extends HttpServlet {
          System.out.println(parsedRequest.getBody());
          for(Part part: parsedRequest.getParts()) {
             System.out.println("Parts of parsedRequest");
-            System.out.println(parsedRequest.getHeaders());
+            System.out.println(part.getHeader());
             System.out.println(part.getContent());
          }
 
