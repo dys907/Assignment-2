@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.File;
+import java.sql.Timestamp;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -15,12 +16,13 @@ public class ErrorLogAspect {
  
 	@Before("handler(*) && args(e)")
     public void logCaughtException(JoinPoint thisJoinPoint, Exception e) {
-        System.out.println("Exception caught and handler");
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        System.out.println("Exception caught and handled");
         System.out.println(thisJoinPoint + " -> " + e);
        
         File myObj = new File("ErrorLog.txt");
         try (PrintWriter writer = new PrintWriter(new FileWriter("ErrorLog.txt", true))) {
-            writer.println("Error Encountered and Written to Log: -> " + e);
+            writer.println(timestamp + ": Error -> " + e);
         } catch (IOException err) {
             err.printStackTrace();
         }
