@@ -4,6 +4,7 @@ import java.time.*;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.ArrayList;
 
 public class UploadServlet extends HttpServlet {
    private OutputStream servletBaos;
@@ -96,10 +97,30 @@ public class UploadServlet extends HttpServlet {
 
          File dir = new File("..\\..\\images\\");
          String[] chld = dir.list();
-         for (int i = 0; i < chld.length; i++) {
-            String fileName = chld[i];
-            servletBaos.write((fileName + "\n").getBytes());
+//         for (int i = 0; i < chld.length; i++) {
+//            String fileName = chld[i];
+//            servletBaos.write((fileName + "\n").getBytes());
+//         }
+//         String jsonObj = "{" + "\n" + "fileNames";
+//         JSONObject jsonObject = new JSONObject();
+//         ArrayList<JSONObject> arr = new ArrayList<>();
+//         for (String fileName : chld) {
+//            JSONObject obj = new JSONObject().put("fileName", fileName);
+//            arr.add(obj);
+//         }
+//         jsonObject.put("fileNames", arr.toArray());
+//         servletBaos.write(jsonObject.toString().getBytes());
+         boolean isBrowser = true; // change this to user agent
+         if (isBrowser) {
+            servletBaos.write(getListing("..\\..\\images\\").getBytes());
+         } else {
+            String jsonObj = "{\"filenames\":[";
+            for (String fileName : chld) {
+               jsonObj += "{\"fileName\":\"" + fileName + "\"},";
+            }
+            servletBaos.write(jsonObj.getBytes());
          }
+
       } catch (Exception ex) {
          System.err.println(ex);
       }
@@ -114,9 +135,39 @@ public class UploadServlet extends HttpServlet {
          servletBaos.write(header.getBytes());
          servletBaos.write(body.getBytes());
 
+
+
+
+
+
+
       } catch (IOException e) {
          e.printStackTrace();
       }
+   }
+
+   private String getListing(String path) {
+
+      String dirList =  null;
+
+      File dir = new File(path);
+
+      String[] chld = dir.list();
+
+      for (String string : chld) {
+
+         if ((new File(path + string)).isDirectory())
+
+            dirList += "<li><button type=\"button\">" + string + "</button></li>";
+
+         else
+
+            dirList += "<li>" + string + "</li>";
+
+      }
+
+      return dirList;
+
    }
 
    private String createGetHeader(int messageLen) {
