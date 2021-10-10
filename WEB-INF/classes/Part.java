@@ -5,6 +5,7 @@ import java.util.Hashtable;
 public class Part {
     private String header;
     private String content;
+    private byte[] byteContent;
     public Part(String headers, String content) {
         List<String> headerList = Arrays.asList(headers.split("\\s*;\\s*"));
         for(String headerStr : headerList) {
@@ -15,6 +16,18 @@ public class Part {
             }
         }
         this.content = content;
+    }
+    //for images
+    public Part(String headers, byte[] byteContent) {
+        List<String> headerList = Arrays.asList(headers.split("\\s*;\\s*"));
+        for(String headerStr : headerList) {
+            if(headerStr.contains("name=")) {
+                int keyAssign = headerStr.indexOf("=");
+                this.header = headerStr.substring(keyAssign + 1);
+                System.out.println("Header " + this.header);
+            }
+        }
+        this.byteContent = byteContent;
     }
 
     public String getHeader() {
