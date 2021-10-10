@@ -64,16 +64,21 @@ public class UploadServlet extends HttpServlet {
                date = part.getContent();
             }
             else if (header.equals("fileName")){
+               imgName = part.getContent();
+               extension = imgName.substring(imgName.lastIndexOf(".") + 1);
+            } else if (header.equals("image")){
+               file = part.getContent();
+            } else {
                imgName = header;
-               System.out.println("IMAGE NAME");
-               System.out.println(imgName);
                file = part.getContent();
                extension = imgName.substring(imgName.lastIndexOf(".") + 1);
             }
          }
          System.out.println("Just before file creation");
          String newFileName = imgName + "_" + date + "_" + caption + "." + extension;
+         System.out.println("------------------fileName: " + newFileName);
          System.out.println("file length sanity check: " + file.length());
+         System.out.println(file);
 
 
          //FILE WRITING STARTS HERE
