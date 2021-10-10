@@ -47,7 +47,7 @@ public class UploadServlet extends HttpServlet {
          String date = "";
          String imgName = "";
          String file = "";
-         String extension = "";
+
          System.out.println("just before parts call");
 
          for(Part part: parsedRequest.getParts()) {
@@ -65,15 +65,15 @@ public class UploadServlet extends HttpServlet {
             }
             else if (header.equals("fileName")){
                imgName = part.getContent();
-               extension = imgName.substring(imgName.lastIndexOf(".") + 1);
             } else if (header.equals("image")){
                file = part.getContent();
             } else {
                imgName = header;
                file = part.getContent();
-               extension = imgName.substring(imgName.lastIndexOf(".") + 1);
             }
          }
+         String extension = imgName.substring(imgName.lastIndexOf(".") + 1);
+         if (!extension.equals("png") || !extension.equals("jpg")) extension = "png";
          System.out.println("Just before file creation");
          String newFileName = imgName + "_" + date + "_" + caption + "." + extension;
          System.out.println("------------------fileName: " + newFileName);
@@ -105,8 +105,6 @@ public class UploadServlet extends HttpServlet {
             String imageString = Base64.getEncoder().withoutPadding().encodeToString(data);
             byte[] decodeImg = Base64.getDecoder().decode(imageString);
 
-            Clock clock = Clock.systemDefaultZone();
-            long milliSeconds=clock.millis();
             OutputStream outputStream = new FileOutputStream(new File("..\\..\\images\\"+ newFileName));
 
 //            outputStream.write(decodeImg, 0, decodeImg.length);
@@ -119,36 +117,14 @@ public class UploadServlet extends HttpServlet {
 //         byte[] imgBytes = Base64.getDecoder().decode(file);
 
             newImg.write(file.getBytes());
-
-            Clock clock = Clock.systemDefaultZone();
-            long milliSeconds = clock.millis();
-            //Writes the request info directly into a file
-            OutputStream outputStream = new FileOutputStream(new File("..\\..\\images\\" + String.valueOf(milliSeconds) + ".png"));
-            baos.writeTo(outputStream);
-            outputStream.close();
          }
 
 //         PrintWriter out = new PrintWriter(response.getOutputstream(), true);
 
-            //Pushes file names into servletBaos to get sent to output stream
 
             File dir = new File("..\\..\\images\\");
             String[] chld = dir.list();
             Arrays.sort(chld);
-//         for (int i = 0; i < chld.length; i++) {
-//            String fileName = chld[i];
-//            servletBaos.write((fileName + "\n").getBytes());
-//         }
-//         String jsonObj = "{" + "\n" + "fileNames";
-//         JSONObject jsonObject = new JSONObject();
-//         ArrayList<JSONObject> arr = new ArrayList<>();
-//         for (String fileName : chld) {
-//            JSONObject obj = new JSONObject().put("fileName", fileName);
-//            arr.add(obj);
-//         }
-//         jsonObject.put("fileNames", arr.toArray());
-//         servletBaos.write(jsonObject.toString().getBytes());
-
 
             boolean isBrowser = !parsedRequest.getBase64Encoded(); // change this to user agent
             if (isBrowser) {
@@ -168,8 +144,6 @@ public class UploadServlet extends HttpServlet {
 
                servletBaos.write(jsonObj.getBytes());
             }
-
-
 
       } catch (Exception ex) {
          System.err.println(ex);
