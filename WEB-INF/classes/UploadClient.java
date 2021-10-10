@@ -145,7 +145,7 @@ public class UploadClient {
 
             + "--" + boundary + "\n"
             + "Content-Disposition: form-data; name=\"image\"" + "\n"
-            + "Content-Type: \"image/base64\"" + "\n"
+            + "Content-Type: image/base64" + "\n"
             + "\n"
             + image + "\n"
 
