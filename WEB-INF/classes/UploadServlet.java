@@ -51,13 +51,37 @@ public class UploadServlet extends HttpServlet {
          System.out.println(parsedRequest.getRequest());
          System.out.println("Body");
          System.out.println(parsedRequest.getBody());
+         String caption = "";
+         String date = "";
+         String imgName = "";
+         String file = "";
          for(Part part: parsedRequest.getParts()) {
             System.out.println("Parts of parsedRequest");
             System.out.println(part.getHeader());
             System.out.println(part.getContent());
+            String header = part.getHeader().replace("\"", "");
+            if (header.equals("caption")) {
+               caption = part.getContent();
+            }
+            else if (header.equals("date")) {
+               date = part.getContent();
+            }
+            else {
+               imgName = header;
+               file = part.getContent().toString();
+            }
          }
+         String extension = imgName.substring(imgName.lastIndexOf(".") + 1);
+         String newFileName = imgName + "_" + date + "_" + caption + "." + extension;
+         OutputStream newImg = new BufferedOutputStream(new FileOutputStream("..\\..\\images\\" + newFileName));
+         newImg.write(file.getBytes());
+
+
+
 
          //End Parse
+
+
 
          Clock clock = Clock.systemDefaultZone();
          long milliSeconds = clock.millis();
