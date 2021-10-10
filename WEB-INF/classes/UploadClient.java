@@ -139,13 +139,13 @@ public class UploadClient {
      */
     private String getMessageBody(String fileName, String image) {
         return 
-//            boundary + "\n"
-//            + "Content-Disposition: form-data; name=\"fileName\"" + "\n"
-//            + "\n"
-//            + rawFileName + "\n"
+            boundary + "\n"
+            + "Content-Disposition: form-data; name=\"fileName\"" + "\n"
+            + "\n"
+            + rawFileName + "\n"
 
-             boundary + "\n"
-            + "Content-Disposition: form-data; name=\"fileName\"; filename = \"" + rawFileName + "\"\n"
+        + boundary + "\n"
+            + "Content-Disposition: form-data; name=\"image\"" + "\n"
             + "Content-Type: image/base64" + "\n"
             + "\n"
             + image + "\n"

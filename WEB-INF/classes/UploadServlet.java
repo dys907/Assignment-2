@@ -63,7 +63,12 @@ public class UploadServlet extends HttpServlet {
             else if (header.equals("date") || header.equals("rawDate")) {
                date = part.getContent();
             }
-            else {
+            else if (header.equals("fileName")){
+               imgName = part.getContent();
+               extension = imgName.substring(imgName.lastIndexOf(".") + 1);
+            } else if (header.equals("image")){
+               file = part.getContent();
+            } else {
                imgName = header;
                file = part.getContent();
                extension = imgName.substring(imgName.lastIndexOf(".") + 1);
@@ -71,6 +76,7 @@ public class UploadServlet extends HttpServlet {
          }
          System.out.println("Just before file creation");
          String newFileName = imgName + "_" + date + "_" + caption + "." + extension;
+         System.out.println("------------------fileName: " + newFileName);
          System.out.println("file length sanity check: " + file.length());
          System.out.println(file);
 
