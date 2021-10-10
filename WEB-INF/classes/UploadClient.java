@@ -139,29 +139,29 @@ public class UploadClient {
      */
     private String getMessageBody(String fileName, String image) {
         return 
-            boundary + "\n"
-            + "Content-Disposition: form-data; name=\"fileName\"" + "\n"
-            + "\n"
-            + fileName + "\n"
+//            boundary + "\n"
+//            + "Content-Disposition: form-data; name=\"fileName\"" + "\n"
+//            + "\n"
+//            + rawFileName + "\n"
 
-            + boundary + "\n"
-            + "Content-Disposition: form-data; name=\"image\"" + "\n"
+             boundary + "\n"
+            + "Content-Disposition: form-data; name=\"fileName\"; filename = \"" + rawFileName + "\"\n"
             + "Content-Type: image/base64" + "\n"
             + "\n"
             + image + "\n"
 
-            + boundary + "\n"
-            + "Content-Disposition: form-data; name=\"rawFileName\"" + "\n"
-            + "\n"
-            + rawFileName + "\n"
+//            + boundary + "\n"
+//            + "Content-Disposition: form-data; name=\"rawFileName\"" + "\n"
+//            + "\n"
+//            + rawFileName + "\n"
 
             + boundary + "\n"
-            + "Content-Disposition: form-data; name=\"rawDate\"" + "\n"
+            + "Content-Disposition: form-data; name=\"date\"" + "\n"
             + "\n"
             + rawDate + "\n"
 
             + boundary + "\n"
-            + "Content-Disposition: form-data; name=\"rawCaption\"" + "\n"
+            + "Content-Disposition: form-data; name=\"caption\"" + "\n"
             + "\n"
             + rawCaption + "\n"
 
