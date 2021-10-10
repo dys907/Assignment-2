@@ -22,7 +22,7 @@ public class ParsedRequest {
 
         //POST or GET check
         this.request = reader.readLine();
-        this.type = this.request.split(" ")[0];
+        this.type = this.request.split(" ")[1];
         System.out.println("debug0");
 
         //Header parse
@@ -58,32 +58,40 @@ public class ParsedRequest {
 
 
         line = reader.readLine();
-        while(!line.trim().isEmpty()) {
+        int counter = 0;
+        while(line != null) {
             System.out.println("debug3");
             if (this.boundary != null) {
                 System.out.println("debug4");
                 String header = "";
                 String content = "";
                 Part part;
-                while(!line.contains("--" + this.boundary)) {
 
-                    if(line.contains("Content-Disposition: form-data")) {
-                        header = line;
-                        System.out.println("debug5");
-                        System.out.println(header);
-                    } else if (!line.trim().isEmpty()) {
-                        System.out.println("debug6");
-                        content = line;
-                        System.out.println(content);
+                if (line.contains("Content-Disposition: form-data")) {
+                    header = line;
+                    System.out.println("debug5");
+                    System.out.println(header);
+                } else if (line.contains("--" + this.boundary)) {
+                    if(counter == 0) {
+                        counter++;
+                    } else {
+                        part = new Part(header,content);
+                        parts.add(part);
+                        System.out.println("debug 5.5");
                     }
-                    line = reader.readLine();
+                }else if (!line.trim().isEmpty()) {
+                    System.out.println("debug6");
+                    content = line;
+                    System.out.println(content);
                 }
-                part = new Part(header,content);
-                parts.add(part);
+                //line = reader.readLine();
+                System.out.println("debug7");
             } else {
                 bodyBuffer.append(line);
             }
+            System.out.println("debug8");
             line = reader.readLine();
+            System.out.println("debug9");
         }
         if(bodyBuffer.toString().isEmpty()) {
             this.body = bodyBuffer.toString();
