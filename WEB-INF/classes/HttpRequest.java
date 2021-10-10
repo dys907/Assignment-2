@@ -9,4 +9,6 @@ public class HttpRequest {
     public InputStream getInputStream() {
         return this.inputStream;
     }
+
+
 }

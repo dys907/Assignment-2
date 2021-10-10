@@ -1,0 +1,25 @@
+Host: localhost:8999
+Content-Type: multipart/form-data;boundary="boundary"
+Content-Length: 355
+--boundary
+Content-Disposition: form-data; name="fileName"
+
+heyyo_lmao_ayy
+--boundary
+Content-Disposition: form-data; name="image"
+
+[B@26f67b76
+--boundary
+Content-Disposition: form-data; name="rawFileName"
+
+heyyo
+--boundary
+Content-Disposition: form-data; name="rawDate"
+
+lmao
+--boundary
+Content-Disposition: form-data; name="rawCaption"
+
+ayy
+--boundary--
+

@@ -1,39 +1,62 @@
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
 public class UploadServlet extends HttpServlet {
    private OutputStream servletBaos;
+   private BufferedReader br;
 
    public UploadServlet() {
       servletBaos = new ByteArrayOutputStream();
+
    }
 
+   public void requestHandler(HttpRequest req, HttpResponse res) throws IOException {
+      br = new BufferedReader(new InputStreamReader(req.getInputStream()));
+      String inputLine = br.readLine();;
+
+      if (inputLine.contains("GET")) {
+         doGet(req,res);
+
+      }
+      if (inputLine.contains("POST")) {
+         System.out.println("IN RUN METHOD");
+         doPost(req, res);
+      }
+   }
    public void doPost(HttpRequest request, HttpResponse response) {
       try {
-         InputStream in = request.getInputStream();
+         //baos used to write to file
          ByteArrayOutputStream baos = new ByteArrayOutputStream();
-         byte[] content = new byte[1];
-         int bytesRead = -1;
-         while ((bytesRead = in.read(content)) != -1) {
-            baos.write(content, 0, bytesRead);
+         String inputLine;
+         String requestString = "";
+         while (br.ready()) {
+            inputLine = br.readLine();
+            requestString += inputLine + "\n";
          }
+
+         baos.write(requestString.getBytes());
+
          Clock clock = Clock.systemDefaultZone();
          long milliSeconds = clock.millis();
+         //Writes the request info directly into a file
          OutputStream outputStream = new FileOutputStream(new File("..\\..\\images\\" + String.valueOf(milliSeconds) + ".png"));
          baos.writeTo(outputStream);
          outputStream.close();
+<<<<<<< HEAD
          PrintWriter out = new PrintWriter(response.getOutputstream(), true);
-         File dir = new File(".");
+=======
+
+         //Pushes file names into servletBaos to get sent to output stream
+>>>>>>> 6899fbd252d10bcb52b7fc0c5899d170f11dad35
+         File dir = new File("..\\..\\images\\");
          String[] chld = dir.list();
          for (int i = 0; i < chld.length; i++) {
             String fileName = chld[i];
-            out.println(fileName + "\n");
-            System.out.println(fileName);
+            servletBaos.write((fileName + "\n").getBytes());
          }
       } catch (Exception ex) {
          System.err.println(ex);
@@ -67,7 +90,7 @@ public class UploadServlet extends HttpServlet {
               .append(endLine);
       builder.append("Server: MyLaptop").append(httpDate)
               .append(endLine);
-      builder.append("Connection: keep-alive")
+      builder.append("Connection: close")
               .append(endLine);
       builder.append("Content-Length: ").append(messageLen)
               .append(endLine);
@@ -83,7 +106,7 @@ public class UploadServlet extends HttpServlet {
       "<!DOCTYPE html>" +
               "<html><head><title>File Upload Form</title></head>" +
               "<body><h1>Upload file</h1>" +
-              "<form method=\"POST\" action=\"upload\" " +
+              "<form method=\"POST\" action=\"/\" " +
               "enctype=\"multipart/form-data\">" +
               "<input type=\"file\" name=\"fileName\"/><br/><br/>" +
               "Caption: <input type=\"text\" name=\"caption\"<br/><br/>" +
@@ -92,7 +115,8 @@ public class UploadServlet extends HttpServlet {
               "<br />" +
               "<input type=\"submit\" value=\"Submit\"/>" +
               "</form>" +
-              "</body></html>";
+              "</body></html>"
+              + "\r\n\n";
    }
 
    public ByteArrayOutputStream getServletBaos() {
