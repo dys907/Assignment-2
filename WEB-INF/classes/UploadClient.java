@@ -4,6 +4,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+import java.util.Base64;
+
+
 public class UploadClient {
 
     private String rawFileName;
@@ -58,24 +62,37 @@ public class UploadClient {
             BufferedReader in = new BufferedReader(
                 new InputStreamReader(socket.getInputStream()));
             OutputStream out = socket.getOutputStream();
+
             FileInputStream fis = new FileInputStream("AndroidLogo.png");
-            byte[] bytes = fis.readAllBytes();
+            int bufLength = 2048;
+            byte[] buffer = new byte[2048];
+            byte[] data;
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            int readLength;
+            while ((readLength = fis.read(buffer, 0, bufLength)) != -1) {
+                baos.write(buffer, 0, readLength);
+            }
+
+            data = baos.toByteArray();
+
+            String imageString = Base64.getEncoder().withoutPadding().encodeToString(data);
+
+            fis.close();
 
             //Get the length of the message for the header
-            int messageLength = getMessageBody(fileName, bytes).length();
+            int messageLength = getMessageBody(fileName, imageString).length();
 
             //Start the POST Message
             out.write(getHeaderMessage(messageLength).getBytes()); 
             
             //Write thr fileName and image as parameters in the header
-            out.write(getMessageBody(fileName, bytes).getBytes());
+            out.write(getMessageBody(fileName, imageString).getBytes());
             
             //End the POST
             out.write(endMessage.getBytes());
-
-            //Shutdown the output to the server
             socket.shutdownOutput();
-            fis.close();
+
 
             //Get the return from the server as a listing of all images
             System.out.println("Getting reply from server...\n");
@@ -83,7 +100,9 @@ public class UploadClient {
             while ((filename = in.readLine()) != null) {
                 listing += filename;
             }
+            //Shutdown the output to the server
             socket.shutdownInput();
+            socket.close();
         } catch (Exception e) {
             System.err.println(e);
         }
@@ -117,7 +136,7 @@ public class UploadClient {
      * Gets the upload data 
      * @return data to go to upload stream
      */
-    private String getMessageBody(String fileName, byte[] image) {
+    private String getMessageBody(String fileName, String image) {
         return 
             "--" + boundary + "\n"
             + "Content-Disposition: form-data; name=\"fileName\"" + "\n"
@@ -127,7 +146,7 @@ public class UploadClient {
             + "--" + boundary + "\n"
             + "Content-Disposition: form-data; name=\"image\"" + "\n"
             + "\n"
-            + image.toString() + "\n"
+            + image + "\n"
 
             + "--" + boundary + "\n"
             + "Content-Disposition: form-data; name=\"rawFileName\"" + "\n"
