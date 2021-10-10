@@ -40,8 +40,9 @@ public class ParsedRequest {
             this.contentType = headers.get("Content-Type");
             //boundary delimiter
             if (this.contentType.contains("multipart/form-data")) {
-                int boundaryIndex = this.contentType.indexOf("boundary=");
-                this.boundary = this.contentType.substring(boundaryIndex);
+                int boundaryIndex = this.contentType.indexOf("=");
+                System.out.println(boundaryIndex);
+                this.boundary = this.contentType.substring(boundaryIndex + 1);
             }
         }
 
@@ -67,18 +68,20 @@ public class ParsedRequest {
                 String content = "";
                 Part part;
 
-                if (line.contains("Content-Disposition: form-data")) {
+                if (line.contains(this.boundary)) {
+                    if (counter == 0) {
+                        counter++;
+                    } else {
+                        part = new Part(header, content);
+                        parts.add(part);
+                        System.out.println("debug 4.5");
+                    }
+                }
+                else if (line.contains("Content-Disposition: form-data")) {
                     header = line;
                     System.out.println("debug5");
                     System.out.println(header);
-                } else if (line.contains("--" + this.boundary)) {
-                    if(counter == 0) {
-                        counter++;
-                    } else {
-                        part = new Part(header,content);
-                        parts.add(part);
-                        System.out.println("debug 5.5");
-                    }
+
                 }else if (!line.trim().isEmpty()) {
                     System.out.println("debug6");
                     content = line;
