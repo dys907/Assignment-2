@@ -1,3 +1,0 @@
-2021-10-10 14:58:58.521: Error -> IncorrectFileTypeException: Can only upload png/jpeg/gif images
-2021-10-10 14:58:58.56: Error -> java.net.ConnectException: Connection refused: connect
-2021-10-10 14:58:58.697: Error -> org.json.JSONException: A JSONObject text must begin with '{' at 0 [character 1 line 1]
