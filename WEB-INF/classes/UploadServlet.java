@@ -22,7 +22,6 @@ public class UploadServlet extends HttpServlet {
 
       }
       if (inputLine.contains("POST")) {
-         System.out.println("IN RUN METHOD");
          doPost(req, res);
       }
    }
@@ -36,17 +35,19 @@ public class UploadServlet extends HttpServlet {
 //            inputLine = br.readLine();
             requestString += inputLine + "\n";
          }
-         System.out.println("Exit stringbuilder loop");
-         System.out.println("==========REQ STRING=========");
-         System.out.println(requestString);
+
+//         System.out.println("==========REQ STRING=========");
+//         System.out.println(requestString);
+
          baos.write(requestString.getBytes());
-         System.out.println("does it break here?");
+
          //Parse request
          ParsedRequest parsedRequest = new ParsedRequest(requestString);
          String caption = "";
          String date = "";
          String imgName = "";
          String file = "";
+         String extension = "";
          System.out.println("just before parts call");
 
          for(Part part: parsedRequest.getParts()) {
@@ -56,20 +57,19 @@ public class UploadServlet extends HttpServlet {
             String header = part.getHeader().replace("\"", "");
             if (header.equals("caption") || header.equals("rawCaption")) {
                caption = part.getContent();
+               System.out.println("CAPTION");
+               System.out.println(caption);
             }
             else if (header.equals("date") || header.equals("rawDate")) {
                date = part.getContent();
             }
-            else if (header.equals("image")){
+            else {
                imgName = header;
                file = part.getContent();
-//               System.out.println(file);
-               System.out.println("does this ge toverrideen");
-               System.out.println(file.length());
+               extension = imgName.substring(imgName.lastIndexOf(".") + 1);
             }
          }
          System.out.println("Just before file creation");
-         String extension = imgName.substring(imgName.lastIndexOf(".") + 1);
          String newFileName = imgName + "_" + date + "_" + caption + "." + extension;
          System.out.println("file length sanity check: " + file.length());
          System.out.println(file);
@@ -101,7 +101,7 @@ public class UploadServlet extends HttpServlet {
 
             Clock clock = Clock.systemDefaultZone();
             long milliSeconds=clock.millis();
-            OutputStream outputStream = new FileOutputStream(new File("..\\..\\images\\"+ String.valueOf(milliSeconds) + ".png"));
+            OutputStream outputStream = new FileOutputStream(new File("..\\..\\images\\"+ newFileName));
 
 //            outputStream.write(decodeImg, 0, decodeImg.length);
             outputStream.write(file.getBytes());
@@ -142,7 +142,6 @@ public class UploadServlet extends HttpServlet {
 //         jsonObject.put("fileNames", arr.toArray());
 //         servletBaos.write(jsonObject.toString().getBytes());
 
-            System.out.println("do we even get here");
 
             boolean isBrowser = !parsedRequest.getBase64Encoded(); // change this to user agent
             if (isBrowser) {
@@ -232,7 +231,7 @@ public class UploadServlet extends HttpServlet {
               "<body><h1>Upload file</h1>" +
               "<form method=\"POST\" action=\"/\" " +
               "enctype=\"multipart/form-data\">" +
-              "<input type=\"file\" name=\"image\"/><br/><br/>" +
+              "<input type=\"file\" name=\"fileName\"/><br/><br/>" +
               "Caption: <input type=\"text\" name=\"caption\"<br/><br/>" +
               "<br />" +
               "Date: <input type=\"date\" name=\"date\"<br/><br/>" +
