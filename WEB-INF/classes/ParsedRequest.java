@@ -52,6 +52,7 @@ public class ParsedRequest {
         String content = "";
         while(line != null) {
             content = "";
+            boolean imageData = false;
             if (this.boundary != null) {
                 Part part;
                 if ((line.contains(this.boundary+"--"))) break;
@@ -67,15 +68,25 @@ public class ParsedRequest {
 //                            System.out.println("header: "+header);
                         }
                         if (line.contains("Content-Type:")) {
+                            imageData = true;
                             line = reader.readLine();
                         }
 
 //                        System.out.println("before whiel loops");
                         while (!line.contains(this.boundary)) {
-                            content += line;
+                            if (imageData) {
+                                content += line + "\n";
+                            } else {
+                                content += line;
+                            }
                             line = reader.readLine();
+
 //                            System.out.println("In while loop, content:");
 //                            System.out.println(content);
+                        }
+
+                        if (content.length() > 500) {
+                            content = content.substring(1, content.length()-1);
                         }
 //                        System.out.println("Out of while loop, content:");
 //                        System.out.println(content);

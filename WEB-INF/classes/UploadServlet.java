@@ -68,9 +68,9 @@ public class UploadServlet extends HttpServlet {
 
 
          OutputStream newImg = new BufferedOutputStream(new FileOutputStream("..\\..\\images\\" + newFileName));
-         byte[] imgBytes = Base64.getDecoder().decode(file);
+//         byte[] imgBytes = Base64.getDecoder().decode(file);
 
-         newImg.write(imgBytes);
+         newImg.write(file.getBytes());
 
 
          //End Parse
