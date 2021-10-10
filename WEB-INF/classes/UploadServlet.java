@@ -22,7 +22,7 @@ public class UploadServlet extends HttpServlet {
          baos.writeTo(outputStream);
          outputStream.close();
          PrintWriter out = new PrintWriter(response.getOutputstream(), true);
-         File dir = new File(".");
+         File dir = new File("..\\..\\images\\");
          String[] chld = dir.list();
       	 for(int i = 0; i < chld.length; i++){
             String fileName = chld[i];
