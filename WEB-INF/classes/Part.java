@@ -38,4 +38,6 @@ public class Part {
         return this.content;
     }
 
+    public byte[] getByteContent() {return this.byteContent;}
+
 }

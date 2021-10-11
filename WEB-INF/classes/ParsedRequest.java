@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -9,6 +6,7 @@ import java.util.List;
 public class ParsedRequest {
     private String request;
     private String contentType;
+    private int contentLength;
     private String type;
     private Hashtable<String, String> headers = new Hashtable<>();
     public List<Part> parts = new ArrayList<>();
@@ -16,36 +14,55 @@ public class ParsedRequest {
     private String boundary;
     private boolean isBase64Encoded;
 
-    ParsedRequest(String request) throws IOException {
-        //BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
-        BufferedReader reader = new BufferedReader(new StringReader(request));
-        String line;
+    ParsedRequest(HttpRequest request) throws IOException {
+        InputStream copyRequest = request.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(copyRequest));
 
-//        System.out.println("parsecheck1");
-        //POST or GET check
-        this.request = reader.readLine();
-        this.type = this.request.split(" ")[1];
+        String line = "";
+        while(!reader.readLine().isEmpty()) {
+
+            System.out.println("parsecheck1");
+            //POST or GET check
+            this.request = reader.readLine();
+            this.type = this.request.split(" ")[1];
 
 //        System.out.println("parsecheck2");
-        //Header parse
-        line = reader.readLine();
-//        System.out.println(line);
-        while(line.length() > 0) {
-            int colon = line.indexOf(":");
-            this.headers.put(line.substring(0, colon), line.substring(colon + 1));
+            //Header parse
             line = reader.readLine();
+//        System.out.println(line);
+            while(line.length() > 0) {
+                int colon = line.indexOf(":");
+                this.headers.put(line.substring(0, colon), line.substring(colon + 1));
+                System.out.println(line);
+                line = reader.readLine();
 
-        }
-//        System.out.println("parsecheck3");
-        //Multipart check
-        if (headers.containsKey("Content-Type")) {
-            this.contentType = headers.get("Content-Type");
-            //boundary delimiter
-            if (this.contentType.contains("multipart/form-data")) {
-                int boundaryIndex = this.contentType.indexOf("=");
-                this.boundary = this.contentType.substring(boundaryIndex + 1);
             }
+//        System.out.println("parsecheck3");
+            //Multipart check
+            if (headers.containsKey("Content-Type")) {
+                this.contentType = headers.get("Content-Type");
+                //boundary delimiter
+                if (this.contentType.contains("multipart/form-data")) {
+                    int boundaryIndex = this.contentType.indexOf("=");
+                    this.boundary = this.contentType.substring(boundaryIndex + 1);
+                }
+            }
+            if (headers.containsKey("Content-Length")) {
+                this.contentLength = Integer.parseInt(headers.get("Content-Length"));
+            }
+            System.out.println(this.boundary);
+            System.out.println(this.contentLength);
         }
+
+//        String inputLine;
+//        String requestString = "";
+//        while (br.ready() && (inputLine = br.readLine()) != null) {
+////            inputLine = br.readLine();
+//            requestString += inputLine + "\n";
+//        }
+        //BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
+        //BufferedReader reader = new BufferedReader(new StringReader(requestString));
+
 //        System.out.println("parsecheck4");
 
         //Body Parse

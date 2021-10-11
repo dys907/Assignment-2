@@ -42,7 +42,7 @@ public class UploadServlet extends HttpServlet {
          baos.write(requestString.getBytes());
 
          //Parse request
-         ParsedRequest parsedRequest = new ParsedRequest(requestString);
+         ParsedRequest parsedRequest = new ParsedRequest(request);
          String caption = "";
          String date = "";
          String imgName = "";
