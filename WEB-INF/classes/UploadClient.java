@@ -151,11 +151,6 @@ public class UploadClient {
             + "\n"
             + image + "\n"
 
-//            + boundary + "\n"
-//            + "Content-Disposition: form-data; name=\"rawFileName\"" + "\n"
-//            + "\n"
-//            + rawFileName + "\n"
-
             + boundary + "\n"
             + "Content-Disposition: form-data; name=\"date\"" + "\n"
             + "\n"
