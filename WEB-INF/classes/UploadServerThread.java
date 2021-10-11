@@ -3,6 +3,7 @@ import java.io.*;
 import java.time.Clock;
 public class UploadServerThread extends Thread {
    private Socket socket = null;
+   private Class<?> theClass;
    public UploadServerThread(Socket socket) {
       super("DirServerThread");
       this.socket = socket;
@@ -14,10 +15,12 @@ public class UploadServerThread extends Thread {
          OutputStream baos = new ByteArrayOutputStream(); 
          HttpResponse res = new HttpResponse(baos);
 
-         HttpServlet httpServlet = new UploadServlet();
-         ((UploadServlet) httpServlet).requestHandler(req, res);
+         theClass = Class.forName("");
+         UploadServlet myUploadServlet = (UploadServlet)theClass.newInstance();
+         UploadServlet httpServlet = myUploadServlet;//new UploadServlet();
+         (httpServlet).requestHandler(req, res);
 
-         ByteArrayOutputStream uploadServletResponse = ((UploadServlet) httpServlet).getServletBaos();
+         ByteArrayOutputStream uploadServletResponse = (httpServlet).getServletBaos();
          baos.write(uploadServletResponse.toByteArray());
          OutputStream out = socket.getOutputStream(); 
          out.write(((ByteArrayOutputStream) baos).toByteArray());
