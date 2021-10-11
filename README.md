@@ -22,7 +22,7 @@ compile.bat (In Window 2)
 ```
 ```
 [In Browser]
-java UploadServer (In Command Prompt) 
+java -javaagent:aspectj\lib\aspectjweaver.jar -classpath .;aspectj\lib\aspectjrt.jar;aspectj\lib\aspectjweaver.jar;json.jar (In Command Prompt) 
 http://localhost:8999
 ```
 
