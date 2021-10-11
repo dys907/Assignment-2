@@ -14,17 +14,23 @@ public class ParsedRequest {
     private String boundary;
     private boolean isBase64Encoded;
     private boolean isGet = false;
+    private InputStreamReader isr;
     private BufferedReader reader;
 
     ParsedRequest(HttpRequest request) throws IOException {
         this.request = request;
+        this.isr = new InputStreamReader(request.getInputStream());
+         this.reader = new BufferedReader(isr);
+
+
+        System.out.println(request.getInputStream().available());
+
+
         //InputStream copyRequest = request.getInputStream();
-        reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
+//        reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
         String line = "";
         int headerLine = 0;
         while (!(line = reader.readLine().trim()).isEmpty()) {
-            System.out.println(line);
-            System.out.println("parsecheck1");
 
             //Set POST or GET
             if (headerLine == 0) {
@@ -54,7 +60,14 @@ public class ParsedRequest {
 
         int contentLength = Integer.parseInt(headers.get("Content-Length").trim());
 
-        InputStream in = request.getInputStream();
+
+
+
+//        InputStream isr = new BufferedInputStream(request.getInputStream());
+        isr.mark(0);
+        isr.reset();
+//        System.out.println(((BufferedReader)isr).available());
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] content = new byte[1];
         int bytesRead = -1;
@@ -62,15 +75,21 @@ public class ParsedRequest {
 
 
 
-        while( counter < contentLength ) {
-            System.out.println("enters whiel loop");
-            bytesRead = in.read( content );
-            baos.write(content);
-            counter++;
-            System.out.println(counter);
-            System.out.println(bytesRead);
+        for (int i = 0; i < 50; i++) {
+            System.out.println(isr.read());
         }
-        System.out.println(content.toString());
+
+
+
+//        while( counter < contentLength ) {
+//            System.out.println("enters whiel loop");
+//            bytesRead = in.read( content );
+//            baos.write(content);
+//            counter++;
+//            System.out.println(counter);
+//            System.out.println(bytesRead);
+//        }
+//        System.out.println(content.toString());
 
 
     }
