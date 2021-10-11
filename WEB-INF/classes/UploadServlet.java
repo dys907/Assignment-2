@@ -27,19 +27,19 @@ public class UploadServlet extends HttpServlet {
    }
    public void doPost(HttpRequest request, HttpResponse response) {
       try {
-         //baos used to write to file
-         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-         String inputLine;
-         String requestString = "";
-         while (br.ready() && (inputLine = br.readLine()) != null) {
-//            inputLine = br.readLine();
-            requestString += inputLine + "\n";
-         }
+//         //baos used to write to file
+//         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//         String inputLine;
+//         String requestString = "";
+//         while (br.ready() && (inputLine = br.readLine()) != null) {
+////            inputLine = br.readLine();
+//            requestString += inputLine + "\n";
+//         }
 
 //         System.out.println("==========REQ STRING=========");
 //         System.out.println(requestString);
 
-         baos.write(requestString.getBytes());
+         //baos.write(requestString.getBytes());
 
          //Parse request
          ParsedRequest parsedRequest = new ParsedRequest(request);
@@ -124,7 +124,7 @@ public class UploadServlet extends HttpServlet {
             long milliSeconds = clock.millis();
             //Writes the request info directly into a file
             OutputStream outputStream = new FileOutputStream(new File("..\\..\\images\\" + String.valueOf(milliSeconds) + ".png"));
-            baos.writeTo(outputStream);
+            //baos.writeTo(outputStream);
             outputStream.close();
          }
 

@@ -15,28 +15,28 @@ public class ParsedRequest {
     private boolean isBase64Encoded;
 
     ParsedRequest(HttpRequest request) throws IOException {
-        InputStream copyRequest = request.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(copyRequest));
-
+        //InputStream copyRequest = request.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
+        System.out.println(reader.readLine());
         String line = "";
-        while(!reader.readLine().isEmpty()) {
+        while(!reader.readLine().trim().isEmpty()) {
 
             System.out.println("parsecheck1");
             //POST or GET check
-            this.request = reader.readLine();
-            this.type = this.request.split(" ")[1];
+//            this.request = reader.readLine();
+//            this.type = this.request.split(" ")[1];
 
 //        System.out.println("parsecheck2");
             //Header parse
-            line = reader.readLine();
+            //line = reader.readLine();
 //        System.out.println(line);
-            while(line.length() > 0) {
+            while(line.trim().length() > 0) {
                 int colon = line.indexOf(":");
                 this.headers.put(line.substring(0, colon), line.substring(colon + 1));
-                System.out.println(line);
                 line = reader.readLine();
 
             }
+        }
 //        System.out.println("parsecheck3");
             //Multipart check
             if (headers.containsKey("Content-Type")) {
@@ -52,7 +52,7 @@ public class ParsedRequest {
             }
             System.out.println(this.boundary);
             System.out.println(this.contentLength);
-        }
+
 
 //        String inputLine;
 //        String requestString = "";
