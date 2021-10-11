@@ -13,7 +13,14 @@ import org.aspectj.lang.JoinPoint;
 
 @Aspect
 public class ErrorLogAspect {
- 
+    
+    @After(value = "execution(* *.*(..))")
+    public void functionCallLog(JoinPoint joinPoint) {
+        System.out.println("Class: " + joinPoint.getSignature().getDeclaringTypeName());
+        System.out.println("Function " + joinPoint.getSignature());
+        System.out.println("");
+    }
+
 	@Before("handler(*) && args(e)")
     public void logCaughtException(JoinPoint thisJoinPoint, Exception e) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
