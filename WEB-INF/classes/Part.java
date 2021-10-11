@@ -6,6 +6,7 @@ public class Part {
     private String header;
     private String content;
     private byte[] byteContent;
+
     public Part(String headers, String content) {
         List<String> headerList = Arrays.asList(headers.split("\\s*;\\s*"));
         for(String headerStr : headerList) {
