@@ -7,23 +7,29 @@ import java.util.*;
 public class UploadServlet extends HttpServlet {
    private OutputStream servletBaos;
    private BufferedReader br;
+   private ParsedRequest parsedRequest;
 
    public UploadServlet() {
       servletBaos = new ByteArrayOutputStream();
-
    }
 
    public void requestHandler(HttpRequest req, HttpResponse res) throws IOException {
-      br = new BufferedReader(new InputStreamReader(req.getInputStream()));
-      String inputLine = br.readLine();;
+      parsedRequest = new ParsedRequest(req);
 
-      if (inputLine.contains("GET")) {
-         doGet(req,res);
 
-      }
-      if (inputLine.contains("POST")) {
-         doPost(req, res);
-      }
+
+
+
+//      br = new BufferedReader(new InputStreamReader(req.getInputStream()));
+//      String inputLine = br.readLine();;
+//
+//      if (inputLine.contains("GET")) {
+//         doGet(req,res);
+//
+//      }
+//      if (inputLine.contains("POST")) {
+//         doPost(req, res);
+//      }
    }
    public void doPost(HttpRequest request, HttpResponse response) {
       try {
