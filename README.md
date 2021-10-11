@@ -39,6 +39,7 @@ http://localhost:8999
 #### Kevin Kang
 - AspectJ
 - Java Reflection
+- Testing/Troubleshooting
 
 #### Ben Chin
 - Testing/Troubleshooting
