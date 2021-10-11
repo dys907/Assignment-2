@@ -3,6 +3,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class UploadServlet extends HttpServlet {
    private OutputStream servletBaos;
@@ -108,8 +109,13 @@ public class UploadServlet extends HttpServlet {
 
 
             File dir = new File("..\\..\\images\\");
-            String[] chld = dir.list();
-            Arrays.sort(chld);
+
+            String[] child = dir.list();
+            List<String> toBeSorted = Arrays.asList(child);
+            List<String> sortedList = toBeSorted.stream().sorted((s1, s2) -> s1.compareTo(s2)).collect(Collectors.toList());
+            String[] sortedChild = new String[sortedList.size()];
+            sortedChild = sortedList.toArray(sortedChild);
+      
 
             boolean isBrowser = !parsedRequest.getBase64Encoded(); // change this to user agent
             if (isBrowser) {
@@ -121,7 +127,7 @@ public class UploadServlet extends HttpServlet {
                servletBaos.write(body.getBytes());
             } else {
                String jsonObj = "{\"fileNames\":[";
-               for (String fileName : chld) {
+               for (String fileName : sortedChild) {
                   jsonObj += "{\"fileName\":\"" + fileName + "\"},";
                }
                jsonObj = jsonObj.substring(0, jsonObj.length()-1);
@@ -155,9 +161,14 @@ public class UploadServlet extends HttpServlet {
               "<body><ul>";
       File dir = new File(path);
       String[] child = dir.list();
-      Arrays.sort(child);
+      List<String> toBeSorted = Arrays.asList(child);
+      List<String> sortedList = toBeSorted.stream().sorted((s1, s2) -> s1.compareTo(s2)).collect(Collectors.toList());
+      String[] sortedChild = new String[sortedList.size()];
+      sortedChild = sortedList.toArray(sortedChild);
 
-      for (String string : child) {
+     // Arrays.sort(child);
+
+      for (String string : sortedChild) {
          if ((new File(path + string)).isDirectory())
             dirList += "<li><button type=\"button\">" + string + "</button></li>";
          else
