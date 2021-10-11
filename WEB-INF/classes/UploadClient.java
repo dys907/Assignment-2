@@ -38,8 +38,9 @@ public class UploadClient {
             String fileExtension = "";
             int index = rawFileName.lastIndexOf('.');
             if (index > 0) fileExtension = rawFileName.substring(index + 1);
+            System.out.println("filetype-----" + fileExtension);
             if (!(fileExtension.matches("(?i)png|jpeg|jpg|gif"))) {
-                throw new IncorrectFileTypeException("Can only upload png/jpeg/gif images");
+                throw new IncorrectFileTypeException("Can only upload png/jpeg/jpg/gif images");
             }
         } catch (IncorrectFileTypeException e) {
             System.out.println("Exception caught - " + e);
@@ -63,7 +64,7 @@ public class UploadClient {
                 new InputStreamReader(socket.getInputStream()));
             OutputStream out = socket.getOutputStream();
 
-            FileInputStream fis = new FileInputStream("AndroidLogo.png");
+            FileInputStream fis = new FileInputStream(rawFileName);
             int bufLength = 2048;
             byte[] buffer = new byte[2048];
             byte[] data;
