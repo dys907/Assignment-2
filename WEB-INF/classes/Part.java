@@ -11,7 +11,6 @@ public class Part {
             if(headerStr.contains("name=")) {
                 int keyAssign = headerStr.indexOf("=");
                 this.header = headerStr.substring(keyAssign + 1);
-                System.out.println("Header " + this.header);
             }
         }
         this.content = content;
