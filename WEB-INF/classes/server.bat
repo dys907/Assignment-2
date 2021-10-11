@@ -1,7 +1,6 @@
 @ECHO OFF
 
 javac FileUploadServlet.java
-javac HitServlet.java
 javac HttpRequest.java
 javac HttpResponse.java
 javac HttpServlet.java
