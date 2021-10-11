@@ -38,7 +38,7 @@ public class UploadClient {
             String fileExtension = "";
             int index = rawFileName.lastIndexOf('.');
             if (index > 0) fileExtension = rawFileName.substring(index + 1);
-            if (!(fileExtension.matches("(?i)png|jpeg|gif"))) {
+            if (!(fileExtension.matches("(?i)png|jpeg|jpg|gif"))) {
                 throw new IncorrectFileTypeException("Can only upload png/jpeg/gif images");
             }
         } catch (IncorrectFileTypeException e) {
