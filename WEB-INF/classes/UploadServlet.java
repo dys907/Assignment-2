@@ -74,6 +74,9 @@ public class UploadServlet extends HttpServlet {
                extension = imgName.substring(imgName.lastIndexOf(".") + 1);
             }
          }
+         if (!(extension.matches("(?i)png|jpeg|gif"))) {
+            throw new IncorrectFileTypeException("Can only upload png/jpeg/gif images");
+         }
          System.out.println("Just before file creation");
          String newFileName = imgName + "_" + date + "_" + caption + "." + extension;
          System.out.println("------------------fileName: " + newFileName);
