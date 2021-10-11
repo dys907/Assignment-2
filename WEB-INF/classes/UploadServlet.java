@@ -89,30 +89,11 @@ public class UploadServlet extends HttpServlet {
          if (parsedRequest.getBase64Encoded()) {
             System.out.println("hopefully this worked");
 
-//            BufferedReader in = new BufferedReader(new StringReader(file));
-
-
-            ByteArrayOutputStream result = new ByteArrayOutputStream();
-            byte[] buffer = file.getBytes();
-
-
-//            for (int length; (length = in.read(buffer)) != -1; ) {
-//               result.write(buffer, 0, length);
-//            }
-
-            String rawData = result.toString(StandardCharsets.UTF_8.name());
-            byte[] data = rawData.getBytes();
-
-
-//            System.out.println(Arrays.toString(data));
-
-            String imageString = Base64.getEncoder().withoutPadding().encodeToString(data);
-            byte[] decodeImg = Base64.getDecoder().decode(imageString);
+            byte[] data = Base64.getMimeDecoder().decode(file.getBytes(StandardCharsets.UTF_8));
 
             OutputStream outputStream = new FileOutputStream(new File("..\\..\\images\\"+ newFileName));
 
-//            outputStream.write(decodeImg, 0, decodeImg.length);
-            outputStream.write(file.getBytes());
+            outputStream.write(data);
             outputStream.close();
 
             //NOT BASE ENCODED FILE WRITE HERE
