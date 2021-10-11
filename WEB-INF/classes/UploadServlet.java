@@ -1,7 +1,6 @@
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,12 +32,9 @@ public class UploadServlet extends HttpServlet {
          String inputLine;
          String requestString = "";
          while (br.ready() && (inputLine = br.readLine()) != null) {
-//            inputLine = br.readLine();
             requestString += inputLine + "\n";
          }
 
-//         System.out.println("==========REQ STRING=========");
-//         System.out.println(requestString);
 
          baos.write(requestString.getBytes());
 
@@ -50,17 +46,10 @@ public class UploadServlet extends HttpServlet {
          String file = "";
          String extension = "";
 
-         System.out.println("just before parts call");
-
          for(Part part: parsedRequest.getParts()) {
-            System.out.println("**************Parts of parsedRequest**************");
-            System.out.println(part.getHeader());
-            System.out.println(part.getContent());
             String header = part.getHeader().replace("\"", "");
             if (header.equals("caption") || header.equals("rawCaption")) {
                caption = part.getContent();
-               System.out.println("CAPTION");
-               System.out.println(caption);
             }
             else if (header.equals("date") || header.equals("rawDate")) {
                date = part.getContent();
@@ -79,16 +68,11 @@ public class UploadServlet extends HttpServlet {
          if (!(extension.matches("(?i)png|jpeg|jpg|gif"))) {
             throw new IncorrectFileTypeException("Can only upload png/jpeg/jpg/gif images");
          }
-         System.out.println("Just before file creation");
          String newFileName = imgName + "_" + date + "_" + caption + "." + extension;
-         System.out.println("------------------fileName: " + newFileName);
-         System.out.println("file length sanity check: " + file.length());
-         System.out.println(file);
 
 
          //FILE WRITING STARTS HERE
          if (parsedRequest.getBase64Encoded()) {
-            System.out.println("hopefully this worked");
 
             byte[] data = Base64.getMimeDecoder().decode(file.getBytes(StandardCharsets.UTF_8));
 
@@ -100,12 +84,11 @@ public class UploadServlet extends HttpServlet {
             //NOT BASE ENCODED FILE WRITE HERE
          } else {
             OutputStream newImg = new BufferedOutputStream(new FileOutputStream("..\\..\\images\\" + newFileName));
-//         byte[] imgBytes = Base64.getDecoder().decode(file);
 
             newImg.write(file.getBytes());
+            newImg.close();
          }
 
-//         PrintWriter out = new PrintWriter(response.getOutputstream(), true);
 
 
             File dir = new File("..\\..\\images\\");
@@ -117,7 +100,7 @@ public class UploadServlet extends HttpServlet {
             sortedChild = sortedList.toArray(sortedChild);
       
 
-            boolean isBrowser = !parsedRequest.getBase64Encoded(); // change this to user agent
+            boolean isBrowser = !parsedRequest.getBase64Encoded();
             if (isBrowser) {
                String body = getListing("..\\..\\images\\");
                int bodyLength = body.length();
@@ -166,7 +149,6 @@ public class UploadServlet extends HttpServlet {
       String[] sortedChild = new String[sortedList.size()];
       sortedChild = sortedList.toArray(sortedChild);
 
-     // Arrays.sort(child);
 
       for (String string : sortedChild) {
          if ((new File(path + string)).isDirectory())
